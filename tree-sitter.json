@@ -1,0 +1,42 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "fpp",
+      "camelcase": "Fpp",
+      "title": "Fprimeprime",
+      "scope": "source.fpp",
+      "file-types": [
+        "fpp"
+      ],
+      "injection-regex": "^fpp$",
+      "class-name": "TreeSitterFpp"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Fprime from JPL",
+    "authors": [
+      {
+        "name": "Kelson Petersen",
+        "email": "kelsonpetersen@icloud.com",
+        "url": ""
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/tree-sitter/tree-sitter-fpp",
+      "funding": ""
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": false,
+    "java": false,
+    "node": false,
+    "python": false,
+    "rust": true,
+    "swift": false,
+    "zig": false
+  }
+}
