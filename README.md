@@ -1,5 +1,6 @@
 > [!WARNING]
-> This is an early version and will be broken
+> This is in pre-release it will not be completely functional
+> For an official JPL fprimeprime text editor use Visual Studio Code
 
 # Installation Instructions
 
