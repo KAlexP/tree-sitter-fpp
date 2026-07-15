@@ -11,5 +11,9 @@
   "license": "ISC",
   "devDependencies": {
     "tree-sitter-cli": "^0.26.10"
+  },
+  "dependencies": {
+    "tree-sitter": "^0.25.0",
+    "tree-sitter-javascript": "^0.25.0"
   }
 }

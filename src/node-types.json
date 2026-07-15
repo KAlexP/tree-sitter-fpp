@@ -19,6 +19,21 @@
     }
   },
   {
+    "type": "action_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "action_use",
     "named": true,
     "fields": {},
@@ -584,11 +599,11 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": false,
+      "multiple": false,
+      "required": true,
       "types": [
         {
-          "type": "action_use",
+          "type": "action_list",
           "named": true
         }
       ]
@@ -1089,9 +1104,13 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "action_list",
+          "named": true
+        },
         {
           "type": "qualified_identifier",
           "named": true
@@ -1888,6 +1907,10 @@
         {
           "type": "state_definition",
           "named": true
+        },
+        {
+          "type": "transition_specifier",
+          "named": true
         }
       ]
     }
@@ -2267,21 +2290,64 @@
   {
     "type": "transition_specifier",
     "named": true,
-    "fields": {},
+    "fields": {
+      "do": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "reserved_word",
+            "named": true
+          }
+        ]
+      },
+      "enter": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "reserved_word",
+            "named": true
+          }
+        ]
+      },
+      "on": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "reserved_word",
+            "named": true
+          }
+        ]
+      },
+      "signal": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "state": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
-      "required": true,
+      "multiple": false,
+      "required": false,
       "types": [
         {
-          "type": "action_use",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "qualified_identifier",
+          "type": "action_list",
           "named": true
         }
       ]

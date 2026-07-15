@@ -1,9 +1,10 @@
-# Install Instructions
+> [!WARNING]
+> This is an early version and will be broken
 
+# Installation Instructions
 
-## File Tree
-
-```
+## Useful Files
+```bash
 .
 ├── grammar.js
 ├── package.json
@@ -21,44 +22,88 @@
         └── parser.h
 ```
 
-## Instructions
+## Install Instructions
+1. Clone the repo
+2. You need to add things to your nvim configs. The following is shown in init.lua, but it can be placed in a different file as long as it is included `require('file')`. See the bottom of the file for an example init to paste into your file.
+    - You need to add the filetype to nvim with the following 
+    ```lua
+        vim.filetype.add({
+          extension = { 
+            fpp = "fpp",
+          },
+        })
+    ```
+    - The next step is to give the location of the parser to nvim
+    ```lua
+        local status, parsers = pcall(require, "nvim-treesitter.parsers")
+        if status then
+          parsers.fpp = {
+            install_info = {
+              url = vim.fn.expand("~/path/to/parser"),
+              files = {"src/parser.c"},
+            },
+            filetype = "fpp",
+          }
+        end
+    ```
+    - Then the language needs to registered
+    ```lua
+        vim.treesitter.language.register("fpp", "fpp") 
+    ```
+    - If you want to toggle comments you need
+    ```lua
+        vim.api.nvim_create_autocmd("FileType", {
+          pattern = "fpp",
+          callback = function()
+            vim.bo.commentstring = "# %s"
+            pcall(vim.treesitter.start)
+          end,
+        })
+    ```
+    - If you want to specify different colors the syntax is shown below
+    ```lua
+        vim.api.nvim_set_hl(0, "@comment.documentation", { fg = "#D2B48C", italic = true })
+    ```
+3. With all the nvim stuff taken care of to get color the queries directory needs to be placed in a place nvim will find it.
+    - The `queries` directory should be located in the directory
+    ```bash
+        ~/.config/nvim/queries/fpp/highlights.scm
+    ```
+The next step to get the parser to work is entering `:TSInstall fpp` in any nvim file. You should now close and reopen nvim with a f prime prime file and the syntax should be highlighted.
 
-Nvim needs to know where the parser.c file is. Add the following lua to your init.lua file
-
+## Example init.lua file
 ```lua
-local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-
-parser_config.fpp = {
+-- NVIM configuration preferences
+vim.opt.clipboard = 'unnamedplus'
+vim.opt.tabstop = 2
+vim.opt.termguicolors = true
+-- This maps the filetype for nvim to activate highlighting
+vim.filetype.add({
+  extension = { 
+    fpp = "fpp",
+  },
+})
+-- Tell nvim the location of the parser
+local status, parsers = pcall(require, "nvim-treesitter.parsers")
+if status then
+  parsers.fpp = {
     install_info = {
-        url = "/path/to/this/folder/",
-        files = {"src/parser.c"},
-        branch = "main",
+      url = vim.fn.expand("~/fprime-projs/tree-sitter-fpp"), -- expand ~ to your absolute home path
+      files = {"src/parser.c"},
     },
     filetype = "fpp",
-}
-```
-
-Nvim also needs to recognize f prime prime files; add the following to your nvim config files (init.lua).
-
-```lua
-vim.filetype.add({
-    extension = {
-        fpp = 'fpp',
-    },
+  }
+end
+-- Register the language engine name mapping
+vim.treesitter.language.register("fpp", "fpp")
+-- This adds comment/uncomment support and starts highlighting safely
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "fpp",
+  callback = function()
+    vim.bo.commentstring = "# %s"
+    pcall(vim.treesitter.start)
+  end,
 })
-
-vim.api.nvim.nvim_create_autocmd("Filetype", {
-    pattern = "fpp",
-    callback = function()
-    vim.treesitter.start()
-    end,
-})
+-- Sets the color of the @ comments to be tan
+vim.api.nvim_set_hl(0, "@comment.documentation", {fg = "#D2B48C}, italic = true)
 ```
-
-The queries directory needs to be placed in the nvim config directory the path should be 
-
-```
-~/.config/nvim/queries/fpp/highlights.scm
-```
-
-The next step to get the parser to work is entering `:TSInstall fpp` in any nvim file. You should now close and reopen nvim with a f prime prime file and the syntax should be highlighted.

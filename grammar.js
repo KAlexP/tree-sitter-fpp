@@ -455,6 +455,7 @@ module.exports = grammar({
       repeat($.pre_annotation),
       choice(
         $.initial_transition_specifier,
+        $.transition_specifier,
         $.state_definition,
         $.choice_definition,
         $.signal_definition,
@@ -464,21 +465,39 @@ module.exports = grammar({
       optional($.post_annotation),
     ),
 
-    initial_transition_specifier: $ => seq('initial', 'enter', $.qualified_identifier, optional(';')),
+    initial_transition_specifier: $ => seq(
+      'initial', 
+      optional(seq( 
+        'do', 
+        $.action_list
+      )),
+      'enter',
+      $.qualified_identifier,
+      optional(';')
+    ),
+    transition_specifier: $ => prec(1,seq(
+      field('on',$.reserved_word),
+      field('signal', $.identifier),
+      optional(seq(field('do',$.reserved_word),
+        $.action_list
+      )),
+      field('enter',$.reserved_word),
+      field('state',$.identifier)
+    )),
 
-    signal_definition: $ => seq('signal', $.identifier, optional(seq(':', $.type_name)), optional(';')),
+    signal_definition: $ => prec(1,seq('signal', $.identifier, optional(seq(':', $.type_name)), optional(';'))),
 
-    action_definition: $ => seq('action', $.identifier, optional(seq(':', $.type_name)), optional(';')),
+    action_definition: $ => prec(1,seq('action', $.identifier, optional(seq(':', $.type_name)), optional(';'))),
 
-    guard_definition: $ => seq('guard', $.identifier, optional(seq(':', $.type_name)), optional(';')),
+    guard_definition: $ => prec(1,seq('guard', $.identifier, optional(seq(':', $.type_name)), optional(';'))),
 
-    state_definition: $ => seq(
+    state_definition: $ => prec(1,seq(
       'state', $.identifier,
       '{',
       repeat($._state_member),
       '}',
       optional(';'),
-    ),
+    )),
 
     _state_member: $ => choice(
       $.entry_specifier,
@@ -488,20 +507,15 @@ module.exports = grammar({
       $.choice_definition,
     ),
 
-    entry_specifier: $ => seq('entry', '{', repeat($.action_use), '}'),
+    entry_specifier: $ => seq('entry', 'do', '{', $.action_list, '}'),
 
-    exit_specifier: $ => seq('exit', '{', repeat($.action_use), '}'),
+    exit_specifier: $ => seq('exit', 'do','{', repeat($.action_use), '}'),
 
     action_use: $ => seq($.identifier, optional(';')),
 
-    transition_specifier: $ => seq(
-      'on', $.identifier,
-      optional(seq('do', '{', repeat($.action_use), '}')),
-      'enter', $.qualified_identifier,
-      optional(';'),
-    ),
+    action_list: $ => seq(choice(seq( '{', $.identifier, optional( repeat(seq(',',$.identifier))), '}'), $.identifier)),
 
-    choice_definition: $ => seq(
+    choice_definition: $ => prec(1,seq(
       'choice', $.identifier,
       '{',
       'if', $.identifier,
@@ -512,7 +526,7 @@ module.exports = grammar({
       'enter', $.qualified_identifier,
       '}',
       optional(';'),
-    ),
+    )),
 
     // ---------- Types ----------
 
@@ -523,7 +537,7 @@ module.exports = grammar({
     ),
 
     // 'string' optionally carries a max-size expression: string size 40
-    string_type: $ => seq('string', optional(seq('size', $._expression))),
+    string_type: $ => prec.right(seq('string', optional(seq('size', $._expression)))),
 
     primitive_type: $ => choice(
       'F32', 'F64', 'I16', 'I32', 'I64', 'I8',
