@@ -1,41 +1,17 @@
 module.exports = grammar({
   name: 'fpp',
-
   word: $ => $._identifier_name,
-
   extras: $ => [
     /\s/,
     /\\[ \t]*\r?\n/,
     $.comment,
   ],
-
-  // Declares a known local ambiguity right after the hidden `_expression`
-  // rule in `base id <expr>`, where the parser can't tell with plain
-  // LALR(1) lookahead whether the following repeat(instance_modifier_clause)
-  // is starting to match or has already matched zero elements. This is
-  // tree-sitter's own suggested resolution (falls back to GLR here).
   conflicts: $ => [
     [$.component_instance_definition],
   ],
-
-  // NOTE ON CONFIDENCE: constants/modules/types/ports/expressions below
-  // are checked closely against the User's Guide and Language
-  // Specification. The component/topology/state-machine section is a
-  // good-faith structural model built from the Guide, the FPP paper,
-  // and the "Define State Machines" how-to, but I don't have the
-  // full BNF for every special-port keyword combination or every
-  // state-machine transition form memorized with full confidence —
-  // treat anything marked "best effort" below as a strong starting
-  // point to verify against fpp-spec.html's grammar appendix, not
-  // gospel.
-
   rules: {
     source_file: $ => repeat($._member),
 
-    // A "member" is anything that can appear at the top level or
-    // inside a module body. Pre-annotations (@ ...) attach to the
-    // following definition; a post-annotation (@< ...) can trail it
-    // on the same line. These are real syntax, not skippable extras.
     _member: $ => seq(
       repeat($.pre_annotation),
       choice(
@@ -55,7 +31,6 @@ module.exports = grammar({
     ),
 
     // ---------- Definitions ----------
-
     constant_definition: $ => seq(
       'constant',
       field('name', $.identifier),
@@ -63,7 +38,6 @@ module.exports = grammar({
       $._expression,
       optional(';'),
     ),
-
     module_definition: $ => seq(
       'module',
       field('name', $.identifier),
@@ -368,10 +342,6 @@ module.exports = grammar({
       optional(seq('{', repeat($.init_specifier), '}')),
       optional(';'),
     ),
-
-    // These may appear in any order, so this is a repeat of a single
-    // choice rule rather than a fixed sequence of six optionals --
-    // that also avoids ambiguity in the generated parser.
     instance_modifier_clause: $ => choice(
       seq('type', $.string_literal),
       seq('at', $.string_literal),
@@ -406,6 +376,7 @@ module.exports = grammar({
         $.topology_import_specifier,
         $.instance_specifier,
         $.connection_graph_specifier,
+        $.pattern_graph_specifier,
       ),
       optional($.post_annotation),
     ),
@@ -421,6 +392,20 @@ module.exports = grammar({
       repeat($.connection),
       '}',
     ),
+    pattern_graph_specifier: $ => seq(
+      choice(
+        'command',
+        'event',
+        'health',
+        'param',
+        'telemetry',
+        seq('text','event'),
+        'time'
+      ),
+      'connections',
+      'instance',
+      $.qualified_identifier,
+    ),
 
     connection: $ => seq(
       optional('unmatched'),
@@ -434,13 +419,6 @@ module.exports = grammar({
       $.qualified_identifier,
       optional(seq('[', $._expression, ']')),
     ),
-
-    // ---------- State machines ----------
-    // BEST EFFORT: modeled after the "Define State Machines" how-to
-    // (initial enter STATE; state STATE { entry {...} exit {...}
-    // on SIGNAL do {...} enter STATE }), but the exact grammar for
-    // choice points and guard/action typing should be checked against
-    // the spec.
 
     state_machine_definition: $ => seq(
       'state', 'machine',

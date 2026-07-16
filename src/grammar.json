@@ -2340,6 +2340,10 @@
             {
               "type": "SYMBOL",
               "name": "connection_graph_specifier"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "pattern_graph_specifier"
             }
           ]
         },
@@ -2440,6 +2444,65 @@
         {
           "type": "STRING",
           "value": "}"
+        }
+      ]
+    },
+    "pattern_graph_specifier": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "command"
+            },
+            {
+              "type": "STRING",
+              "value": "event"
+            },
+            {
+              "type": "STRING",
+              "value": "health"
+            },
+            {
+              "type": "STRING",
+              "value": "param"
+            },
+            {
+              "type": "STRING",
+              "value": "telemetry"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "text"
+                },
+                {
+                  "type": "STRING",
+                  "value": "event"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": "time"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "connections"
+        },
+        {
+          "type": "STRING",
+          "value": "instance"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "qualified_identifier"
         }
       ]
     },

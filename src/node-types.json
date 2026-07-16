@@ -1494,6 +1494,21 @@
     }
   },
   {
+    "type": "pattern_graph_specifier",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "qualified_identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "port_definition",
     "named": true,
     "fields": {},
@@ -2255,6 +2270,10 @@
         },
         {
           "type": "instance_specifier",
+          "named": true
+        },
+        {
+          "type": "pattern_graph_specifier",
           "named": true
         },
         {
