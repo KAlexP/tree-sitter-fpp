@@ -1,6 +1,6 @@
 > [!WARNING]
 > This is in pre-release it will not be completely functional.
-> For an official JPL fprimeprime text editor use Visual Studio Code
+> This is not an official parser. For an official JPL parser for f'' use Visual Studio Code
 
 # Installation Instructions
 
@@ -25,86 +25,140 @@
 
 ## Install Instructions
 1. Clone the repo
-2. You need to add things to your nvim configs. The following is shown in init.lua, but it can be placed in a different file as long as it is included `require('file')`. See the bottom of the file for an example init to paste into your file.
-    - You need to add the filetype to nvim with the following 
+2. Install Dependencies
+```
+tree-sitter:~> 0.26.9
+gcc: ~ 16.1.1
+nvim: ~ v0.12.4
+```
+3. You need to add the necessary configurations for nvim to locate the parser. The first block of code is in `lazy/fpp.lua` file, the next block is in `lazy/treesitter.lua` file.
+    - The following registers fpp as a language, enables comment toggling, and sets up error highlighting.
     ```lua
-        vim.filetype.add({
-          extension = { 
-            fpp = "fpp",
-          },
-        })
-    ```
-    - The next step is to give the location of the parser to nvim
-    ```lua
-        local status, parsers = pcall(require, "nvim-treesitter.parsers")
-        if status then
-          parsers.fpp = {
-            install_info = {
-              url = vim.fn.expand("~/path/to/parser"),
-              files = {"src/parser.c"},
-            },
-            filetype = "fpp",
-          }
+    -- This maps the filetype for nvim to activate highlighting
+    vim.filetype.add({
+      extension = { 
+        fpp = "fpp",
+      },
+    })
+    -- Register the language engine name mapping
+    vim.treesitter.language.register("fpp", "fpp")
+    -- This adds comment/uncomment support and starts highlighting safely
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "fpp",
+      callback = function()
+        vim.bo.commentstring = "# %s"
+        pcall(vim.treesitter.start)
+      end,
+    })
+    -- The following sets up Error Highlighting
+    local fpp_diag_ns = vim.api.nvim_create_namespace("fpp_tree_sitter_errors")
+
+    vim.api.nvim_create_autocmd({ "BufWritePost", "BufWinEnter", "TextChanged", "TextChangedI" }, {
+      pattern = "*.fpp",
+      callback = function(args)
+        local bufnr = args.buf
+        
+        vim.diagnostic.reset(fpp_diag_ns, bufnr)
+        
+        local parser = vim.treesitter.get_parser(bufnr, "fpp", { error = false })
+        if not parser then return end
+        
+        local tree = parser:parse()[1]
+        local root = tree:root()
+        
+        local query = vim.treesitter.query.parse("fpp", "(ERROR) @error_node")
+        local diagnostics = {}
+        
+        for _, node, _ in query:iter_captures(root, bufnr, 0, -1) do
+          local start_row, start_col, end_row, end_col = node:range()
+          
+          table.insert(diagnostics, {
+            lnum = start_row,
+            col = start_col,
+            end_lnum = end_row,
+            end_col = end_col,
+            severity = vim.diagnostic.severity.ERROR,
+            message = "Tree-sitter Parsing Error: Syntax invalid or structural block unclosed.",
+            source = "Tree-Sitter",
+          })
         end
+        
+        vim.diagnostic.set(fpp_diag_ns, bufnr, diagnostics)
+      end,
+    })
+    return {}
+
     ```
-    - Then the language needs to registered
+    - The following is my treesitter configuration to add fpp as a local parser.
     ```lua
-        vim.treesitter.language.register("fpp", "fpp") 
-    ```
-    - If you want to toggle comments you need
-    ```lua
-        vim.api.nvim_create_autocmd("FileType", {
-          pattern = "fpp",
+    return {
+      'nvim-treesitter/nvim-treesitter',
+      branch = 'main',
+      lazy = false,        -- avoid missing the first buffer's FileType event
+      build = ':TSUpdate',
+      config = function()
+        local langs = {
+          "lua", "c", "cpp", "rust", "python", "fortran", "markdown", 
+          "javascript", "fpp",
+        }
+
+        -- register the custom fpp parser BEFORE installing
+        vim.api.nvim_create_autocmd('User', {
+          pattern = 'TSUpdate',
           callback = function()
-            vim.bo.commentstring = "# %s"
-            pcall(vim.treesitter.start)
+            require('nvim-treesitter.parsers').fpp = {
+              install_info = {
+                path = vim.fn.expand("~/path/to/this/repo"), -- local checkout
+                files = { "src/parser.c" },
+              },
+              tier = 2, -- required, or it gets silently skipped
+            }
           end,
         })
+
+        require('nvim-treesitter').install(langs)
+
+        -- highlighting/indent must be turned on manually now
+        vim.api.nvim_create_autocmd('FileType', {
+          pattern = langs,
+          callback = function()
+            pcall(vim.treesitter.start)
+            vim.bo.indentexpr = "v:lua.require('nvim-treesitter').indentexpr()"
+          end,
+        })
+      end,
+    }
     ```
-    - If you want to specify different colors the syntax is shown below
-    ```lua
-        vim.api.nvim_set_hl(0, "@comment.documentation", { fg = "#D2B48C", italic = true })
-    ```
-3. With all the nvim stuff taken care of to get color the queries directory needs to be placed in a place nvim will find it.
-    - The `queries` directory should be located in the directory
+4. With all the nvim stuff taken care of to get color the queries directory needs to be placed in a place nvim will find it.
+    - The `queries` directory should be placed in the directory
     ```bash
         ~/.config/nvim/queries/fpp/highlights.scm
     ```
-The next step to get the parser to work is entering `:TSInstall fpp` in any nvim file. You should now close and reopen nvim with a f prime prime file and the syntax should be highlighted.
-
-## Example init.lua file
-```lua
--- NVIM configuration preferences
-vim.opt.clipboard = 'unnamedplus'
-vim.opt.tabstop = 2
-vim.opt.termguicolors = true
--- This maps the filetype for nvim to activate highlighting
-vim.filetype.add({
-  extension = { 
-    fpp = "fpp",
-  },
-})
--- Tell nvim the location of the parser
-local status, parsers = pcall(require, "nvim-treesitter.parsers")
-if status then
-  parsers.fpp = {
-    install_info = {
-      url = vim.fn.expand("~/fprime-projs/tree-sitter-fpp"), -- expand ~ to your absolute home path
-      files = {"src/parser.c"},
-    },
-    filetype = "fpp",
-  }
-end
--- Register the language engine name mapping
-vim.treesitter.language.register("fpp", "fpp")
--- This adds comment/uncomment support and starts highlighting safely
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "fpp",
-  callback = function()
-    vim.bo.commentstring = "# %s"
-    pcall(vim.treesitter.start)
-  end,
-})
--- Sets the color of the @ comments to be tan
-vim.api.nvim_set_hl(0, "@comment.documentation", {fg = "#D2B48C}, italic = true)
-```
+    This can be accomplished by 
+    ```bash
+        mkdir -p ~/.config/nvim/queries/fpp
+        cp ~/path/to/this/repo/queries/fpp/highlights.scm ~/.config/nvim/queries/fpp/
+    ```
+    or you can create a symlink
+    ```bash
+        mkdir -p ~/.config/nvim/queries
+        ln -s ~/path/to/this/repo/queries/fpp ~/.config/nvim/queries/fpp
+    ```
+5. The next step to get the parser to work is by having tree-sitter install the parser.
+    - This can be acomplished by running
+    ```vim
+        :TSUpdate
+        :TSInstall fpp
+    ```
+    If you pull an update you should run
+    ```vim
+        :TSInstall! fpp
+    ```
+    to recompile the parser.
+6. Verify the parser is working.
+    - Once the last step is completed relaunch nvim with a fpp file and run
+    ```vim
+        :InspectTree
+    ```
+    If a buffer appears with a tree of the document you are in and the syntax highlighting
+    shows up the parser is working.

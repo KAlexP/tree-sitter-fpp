@@ -837,11 +837,11 @@
           "named": true
         },
         {
-          "type": "formal_param_sequence",
+          "type": "identifier",
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "type_name",
           "named": true
         }
       ]
