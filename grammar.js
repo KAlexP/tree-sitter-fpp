@@ -254,7 +254,15 @@ module.exports = grammar({
     event_specifier: $ => seq(
       'event',
       $.identifier,
-      optional(seq('(', optional($.formal_param_sequence), ')')),
+      optional(seq(
+        '(',
+        repeat(seq(
+          $.identifier,
+          ':',
+          $.type_name,
+        )),
+        ')'
+      )),
       repeat($.event_modifier_clause),
       optional(';'),
     ),
