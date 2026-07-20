@@ -79,6 +79,14 @@
   "product"
   "send"
   "request"
+  "text"
+  "every"
+  "always"
+  "change"
+  "param"
+  "external"
+  "record"
+  "container"
 ] @keyword
 
 ; === Operators & Punctuation ===

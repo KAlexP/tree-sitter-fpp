@@ -380,6 +380,10 @@
           "named": true
         },
         {
+          "type": "container_definition",
+          "named": true
+        },
+        {
           "type": "enum_definition",
           "named": true
         },
@@ -413,6 +417,10 @@
         },
         {
           "type": "pre_annotation",
+          "named": true
+        },
+        {
+          "type": "record_definition",
           "named": true
         },
         {
@@ -608,6 +616,25 @@
         },
         {
           "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "container_definition",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "number",
           "named": true
         }
       ]
@@ -820,7 +847,7 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
@@ -888,6 +915,10 @@
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "post_annotation",
           "named": true
         },
         {
@@ -1659,6 +1690,29 @@
         },
         {
           "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "record_definition",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "type_name",
           "named": true
         }
       ]

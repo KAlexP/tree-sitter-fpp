@@ -164,6 +164,51 @@ module.exports = grammar({
       optional($.post_annotation),
     ),
 
+/*
+ *  Record Specifiers have the syntax 
+ *
+ *  Things inside [] are optional
+ *
+ *  product record identifier : type-name [array] [id expression]
+ *
+ *
+ **/
+    record_definition: $ => prec.right(seq(
+      'product',
+      'record',
+      $.identifier,
+      ':',
+      $.type_name,
+      optional('array'),
+      optional(seq(
+        'id',
+        $.number
+      )),
+    )),
+
+/*
+ *  Container Specifiers have the syntax 
+ *
+ *  Things inside [] are optional
+ *
+ *  product container identifier [id expression][default priority expression]
+ *
+ **/
+    container_definition: $ => seq(
+      'product',
+      'container',
+      $.identifier,
+      optional(seq(
+        'id',
+        $.number,
+      )),
+      optional(
+        seq(
+          'default','priority',$.number
+        )
+      ),
+    ),
+
     // ---------- Components ----------
 
     component_definition: $ => seq(
@@ -195,6 +240,8 @@ module.exports = grammar({
         $.struct_definition,
         $.enum_definition,
         $.port_definition,
+        $.record_definition,
+        $.container_definition,
       ),
       optional($.post_annotation),
     ),
@@ -216,10 +263,6 @@ module.exports = grammar({
       choice('assert', 'block', 'drop','hook'),
     ),
 
-    // BEST EFFORT: the twelve special-port kinds (command recv/reg/resp,
-    // event, param get/set, product get/recv/request/send, telemetry,
-    // text event, time get) each bind to a fixed port signature defined
-    // by the framework rather than a user-supplied type.
     special_port_kind: $ => seq(
       optional(choice('async','sync','guarded')),
       choice(
@@ -270,6 +313,7 @@ module.exports = grammar({
           $.identifier,
           ':',
           $.type_name,
+          optional($.post_annotation),
         )),
         ')'
       )),
@@ -281,7 +325,9 @@ module.exports = grammar({
       seq('severity', $.severity),
       seq('id', $._expression),
       seq('format', $.string_literal),
-      seq('throttle', $._expression),
+      seq('throttle', $._expression,
+        optional(seq('every',$.struct_value)),
+      ),
     ),
 
     severity: $ => choice(
@@ -293,6 +339,7 @@ module.exports = grammar({
     ),
 
     param_specifier: $ => seq(
+      optional('external'),
       'param',
       $.identifier,
       ':',
@@ -319,7 +366,7 @@ module.exports = grammar({
 
     telemetry_modifier_clause: $ => choice(
       seq('id', $._expression),
-      seq('update', choice('always', 'on', 'change')),
+      seq('update', choice('always', seq('on', 'change'))),
       seq('format', $.string_literal),
       seq('low', $.limit_sequence),
       seq('high', $.limit_sequence),
