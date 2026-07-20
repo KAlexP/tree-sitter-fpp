@@ -495,13 +495,26 @@ module.exports = grammar({
       optional(seq('[', $._expression, ']')),
     ),
 
+/*
+ *    State Machine Definition
+ *
+ *    Syntax (things in [] are optional)
+ *
+ *     state machine identifier [{state-machine-member-sequence}] 
+ **/
     state_machine_definition: $ => seq(
       'state', 'machine',
-      field('name', $.identifier),
-      '{',
-      repeat($._state_machine_member),
-      '}',
-      optional(';'),
+      optional(
+        choice(
+          seq(
+            field('name', $.identifier),
+            '{',
+            repeat($._state_machine_member),
+            '}',
+          ),
+          field('name', $.identifier), 
+        )
+      ),
     ),
 
     _state_machine_member: $ => seq(
