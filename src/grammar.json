@@ -1169,6 +1169,10 @@
             {
               "type": "STRING",
               "value": "drop"
+            },
+            {
+              "type": "STRING",
+              "value": "hook"
             }
           ]
         }
@@ -4399,6 +4403,10 @@
         {
           "type": "STRING",
           "value": "yellow"
+        },
+        {
+          "type": "STRING",
+          "value": "hook"
         }
       ]
     },

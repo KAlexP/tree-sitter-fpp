@@ -213,12 +213,10 @@ module.exports = grammar({
       repeat($.queue_full_clause),
       optional(';'),
     ),
-
-    // priority and queue-full behavior, shared by every async-capable
-    // port/command specifier below.
+    
     queue_full_clause: $ => choice(
       seq('priority', $._expression),
-      choice('assert', 'block', 'drop'),
+      choice('assert', 'block', 'drop','hook'),
     ),
 
     // BEST EFFORT: the twelve special-port kinds (command recv/reg/resp,
@@ -659,7 +657,7 @@ module.exports = grammar({
       'priority', 'product', 'queue', 'queued', 'record', 'recv', 'red', 'ref', 'reg',
       'request', 'resp', 'save', 'send', 'serial', 'set', 'severity', 'signal', 'size',
       'sizeof', 'stack', 'state', 'string', 'struct', 'sync', 'telemetry', 'text', 'throttle',
-      'time', 'topology', 'true', 'type', 'unmatched', 'update', 'warning', 'with', 'yellow',
+      'time', 'topology', 'true', 'type', 'unmatched', 'update', 'warning', 'with', 'yellow','hook'
     ),
 
     // ---------- Comments / annotations ----------
