@@ -1179,156 +1179,186 @@
       ]
     },
     "special_port_kind": {
-      "type": "CHOICE",
+      "type": "SEQ",
       "members": [
         {
-          "type": "SEQ",
+          "type": "CHOICE",
           "members": [
             {
-              "type": "STRING",
-              "value": "command"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "async"
+                },
+                {
+                  "type": "STRING",
+                  "value": "sync"
+                },
+                {
+                  "type": "STRING",
+                  "value": "guarded"
+                }
+              ]
             },
             {
-              "type": "STRING",
-              "value": "recv"
+              "type": "BLANK"
             }
           ]
         },
         {
-          "type": "SEQ",
+          "type": "CHOICE",
           "members": [
             {
-              "type": "STRING",
-              "value": "command"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "command"
+                },
+                {
+                  "type": "STRING",
+                  "value": "recv"
+                }
+              ]
             },
             {
-              "type": "STRING",
-              "value": "reg"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "command"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "command"
+                },
+                {
+                  "type": "STRING",
+                  "value": "reg"
+                }
+              ]
             },
             {
-              "type": "STRING",
-              "value": "resp"
-            }
-          ]
-        },
-        {
-          "type": "STRING",
-          "value": "event"
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "param"
-            },
-            {
-              "type": "STRING",
-              "value": "get"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "param"
-            },
-            {
-              "type": "STRING",
-              "value": "set"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "product"
-            },
-            {
-              "type": "STRING",
-              "value": "get"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "product"
-            },
-            {
-              "type": "STRING",
-              "value": "recv"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "product"
-            },
-            {
-              "type": "STRING",
-              "value": "request"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "product"
-            },
-            {
-              "type": "STRING",
-              "value": "send"
-            }
-          ]
-        },
-        {
-          "type": "STRING",
-          "value": "telemetry"
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "text"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "command"
+                },
+                {
+                  "type": "STRING",
+                  "value": "resp"
+                }
+              ]
             },
             {
               "type": "STRING",
               "value": "event"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
+            },
             {
-              "type": "STRING",
-              "value": "time"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "param"
+                },
+                {
+                  "type": "STRING",
+                  "value": "get"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "param"
+                },
+                {
+                  "type": "STRING",
+                  "value": "set"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "product"
+                },
+                {
+                  "type": "STRING",
+                  "value": "get"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "product"
+                },
+                {
+                  "type": "STRING",
+                  "value": "recv"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "product"
+                },
+                {
+                  "type": "STRING",
+                  "value": "request"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "product"
+                },
+                {
+                  "type": "STRING",
+                  "value": "send"
+                }
+              ]
             },
             {
               "type": "STRING",
-              "value": "get"
+              "value": "telemetry"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "text"
+                },
+                {
+                  "type": "STRING",
+                  "value": "event"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "time"
+                },
+                {
+                  "type": "STRING",
+                  "value": "get"
+                }
+              ]
             }
           ]
         }

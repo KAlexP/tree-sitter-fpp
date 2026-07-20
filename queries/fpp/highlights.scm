@@ -71,6 +71,14 @@
   "update"
   "warning"
   "yellow"
+  "get"
+  "time"
+  "hook"
+  "sync"
+  "async"
+  "product"
+  "send"
+  "request"
 ] @keyword
 
 ; === Operators & Punctuation ===

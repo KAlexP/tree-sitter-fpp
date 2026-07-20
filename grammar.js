@@ -199,9 +199,6 @@ module.exports = grammar({
       optional($.post_annotation),
     ),
 
-    // sync/async/guarded input port, or an output port. Formal-param
-    // style declaration: name : [array-size] Type, plus queue-full
-    // behavior for async ports.
     general_port_specifier: $ => seq(
       optional(choice('sync', 'async', 'guarded')),
       choice('input', 'output'),
@@ -223,20 +220,23 @@ module.exports = grammar({
     // event, param get/set, product get/recv/request/send, telemetry,
     // text event, time get) each bind to a fixed port signature defined
     // by the framework rather than a user-supplied type.
-    special_port_kind: $ => choice(
-      seq('command', 'recv'),
-      seq('command', 'reg'),
-      seq('command', 'resp'),
-      'event',
-      seq('param', 'get'),
-      seq('param', 'set'),
-      seq('product', 'get'),
-      seq('product', 'recv'),
-      seq('product', 'request'),
-      seq('product', 'send'),
-      'telemetry',
-      seq('text', 'event'),
-      seq('time', 'get'),
+    special_port_kind: $ => seq(
+      optional(choice('async','sync','guarded')),
+      choice(
+        seq('command', 'recv'),
+        seq('command', 'reg'),
+        seq('command', 'resp'),
+        'event',
+        seq('param', 'get'),
+        seq('param', 'set'),
+        seq('product', 'get'),
+        seq('product', 'recv'),
+        seq('product', 'request'),
+        seq('product', 'send'),
+        'telemetry',
+        seq('text', 'event'),
+        seq('time', 'get'),
+      )
     ),
 
     special_port_specifier: $ => seq(
