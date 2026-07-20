@@ -15,6 +15,7 @@ module.exports = grammar({
     _member: $ => seq(
       repeat($.pre_annotation),
       choice(
+        $.abstract_type,
         $.constant_definition,
         $.module_definition,
         $.type_alias_definition,
@@ -26,8 +27,14 @@ module.exports = grammar({
         $.component_instance_definition,
         $.topology_definition,
         $.state_machine_definition,
+        $.dictionary_definition,
       ),
       optional($.post_annotation),
+    ),
+
+    abstract_type: $ => seq(
+      'type',
+      $.qualified_identifier
     ),
 
     // ---------- Definitions ----------
@@ -60,8 +67,7 @@ module.exports = grammar({
       optional(';'),
     ),
 
-    array_definition: $ => seq(
-      optional('dictionary'),
+    array_definition: $ => prec.left(seq(
       'array',
       field('name', $.identifier),
       '=',
@@ -70,10 +76,9 @@ module.exports = grammar({
       optional(seq('default', $._expression)),
       optional(seq('format', $.string_literal)),
       optional(';'),
-    ),
+    )),
 
     struct_definition: $ => seq(
-      optional('dictionary'),
       'struct',
       field('name', $.identifier),
       '{',
@@ -95,13 +100,20 @@ module.exports = grammar({
       repeat($.pre_annotation),
       $.identifier,
       ':',
-      $.type_name,
+      choice(
+        $.type_name, 
+        seq(
+          '[',
+          $._expression,
+          ']',
+          $.type_name,
+        )
+      ),
       optional(seq('format', $.string_literal)),
       optional($.post_annotation),
     ),
 
     enum_definition: $ => seq(
-      optional('dictionary'),
       'enum',
       field('name', $.identifier),
       optional(seq(':', $.type_name)),
@@ -346,21 +358,31 @@ module.exports = grammar({
       ':',
       $.qualified_identifier,
       'base', 'id', $._expression,
-      repeat($.instance_modifier_clause),
+      choice(
+        repeat($.pre_annotation),
+        seq('type', $.string_literal),
+        seq('at', $.string_literal),
+        seq('queue', 'size', $._expression),
+        seq('stack', 'size', $._expression),
+        seq('priority', $._expression),
+        seq('cpu', $._expression),
+        choice(
+          repeat(seq(
+            $.identifier,
+            '=',
+            $._expression,
+            optional($.post_annotation)
+          )),
+          repeat(seq(
+            $.identifier,
+            optional($.post_annotation),
+          )),
+        ),
+      ),
       optional(seq('{', repeat($.init_specifier), '}')),
       optional(';'),
     ),
-    instance_modifier_clause: $ => choice(
-      seq('type', $.string_literal),
-      seq('at', $.string_literal),
-      seq('queue', 'size', $._expression),
-      seq('stack', 'size', $._expression),
-      seq('priority', $._expression),
-      seq('cpu', $._expression),
-    ),
 
-    // BEST EFFORT: init specifiers bind C++ init-code phases to a
-    // named/numbered phase; verify exact phase-name grammar in spec.
     init_specifier: $ => seq(
       'phase',
       choice($.identifier, $.number),
@@ -555,14 +577,6 @@ module.exports = grammar({
       prec.left(2, seq($._expression, choice('+', '-'), $._expression)),
     ),
 
-    // NOTE: there's no separate "member access" expression. FPP doesn't
-    // distinguish "module-qualified name" (A.a) from "struct field
-    // access" (structVal.y) at the syntax level -- both are just a
-    // dotted qualified_identifier; the distinction is resolved later
-    // during semantic analysis, not by the grammar. Keeping a separate
-    // member_expression rule here would just create a real ambiguity
-    // with qualified_identifier over the same '.' token.
-
     index_expression: $ => prec.left(5, seq($._expression, '[', $._expression, ']')),
 
     sizeof_expression: $ => seq('sizeof', '(', $._expression, ')'),
@@ -586,6 +600,17 @@ module.exports = grammar({
     ),
 
     struct_member_value: $ => seq($.identifier, '=', $._expression),
+
+    dictionary_definition: $ => seq(
+      'dictionary',
+      choice(
+        $.type_alias_definition,
+        $.array_definition,
+        $.constant_definition,
+        $.enum_definition,
+        $.struct_definition,
+      ),
+    ),
 
     // ---------- Literals ----------
 
