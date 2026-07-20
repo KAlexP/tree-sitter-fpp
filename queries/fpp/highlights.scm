@@ -87,6 +87,8 @@
   "external"
   "record"
   "container"
+  "match"
+  "with"
 ] @keyword
 
 ; === Operators & Punctuation ===

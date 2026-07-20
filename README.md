@@ -4,7 +4,7 @@
 
 # Installation Instructions
 
-## Useful Files
+## Directory File System
 ```bash
 .
 ├── grammar.js

@@ -412,6 +412,10 @@
           "named": true
         },
         {
+          "type": "port_match",
+          "named": true
+        },
+        {
           "type": "post_annotation",
           "named": true
         },
@@ -1215,6 +1219,33 @@
     }
   },
   {
+    "type": "interface_definition",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "general_port_specifier",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "pre_annotation",
+          "named": true
+        },
+        {
+          "type": "special_port_specifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "internal_port_specifier",
     "named": true,
     "fields": {},
@@ -1357,6 +1388,10 @@
         },
         {
           "type": "enum_definition",
+          "named": true
+        },
+        {
+          "type": "interface_definition",
           "named": true
         },
         {
@@ -1621,6 +1656,21 @@
     }
   },
   {
+    "type": "port_match",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "primitive_type",
     "named": true,
     "fields": {}
@@ -1837,6 +1887,10 @@
         },
         {
           "type": "enum_definition",
+          "named": true
+        },
+        {
+          "type": "interface_definition",
           "named": true
         },
         {

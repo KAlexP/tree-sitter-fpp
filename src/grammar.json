@@ -74,6 +74,10 @@
             {
               "type": "SYMBOL",
               "name": "dictionary_definition"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "interface_definition"
             }
           ]
         },
@@ -873,6 +877,64 @@
         }
       ]
     },
+    "interface_definition": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "interface"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_port_interface_member_sequence"
+        }
+      ]
+    },
+    "_port_interface_member_sequence": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "REPEAT",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "pre_annotation"
+                }
+              },
+              {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "general_port_specifier"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "special_port_specifier"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
     "record_definition": {
       "type": "PREC_RIGHT",
       "value": 0,
@@ -1143,6 +1205,10 @@
             {
               "type": "SYMBOL",
               "name": "container_definition"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "port_match"
             }
           ]
         },
@@ -1157,6 +1223,27 @@
               "type": "BLANK"
             }
           ]
+        }
+      ]
+    },
+    "port_match": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "match"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "STRING",
+          "value": "with"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
         }
       ]
     },
@@ -1257,18 +1344,6 @@
             "type": "SYMBOL",
             "name": "queue_full_clause"
           }
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "STRING",
-              "value": ";"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
         }
       ]
     },

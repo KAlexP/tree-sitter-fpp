@@ -28,6 +28,7 @@ module.exports = grammar({
         $.topology_definition,
         $.state_machine_definition,
         $.dictionary_definition,
+        $.interface_definition,
       ),
       optional($.post_annotation),
     ),
@@ -163,7 +164,29 @@ module.exports = grammar({
       $.type_name,
       optional($.post_annotation),
     ),
+/*
+ *    Interface Definition1
+ *
+ *    interface identifier { port-interface-member-sequence }
+ *
+ **/
+    interface_definition: $ => seq(
+      'interface',
+      $.identifier,
+      $._port_interface_member_sequence,
+    ),
 
+  _port_interface_member_sequence: $ => seq(
+      '{',
+      repeat(seq(
+        repeat($.pre_annotation),
+        choice(
+          $.general_port_specifier,
+          $.special_port_specifier,
+        ),
+      )),
+      '}',
+    ),
 /*
  *  Record Specifiers have the syntax 
  *
@@ -242,8 +265,16 @@ module.exports = grammar({
         $.port_definition,
         $.record_definition,
         $.container_definition,
+        $.port_match,
       ),
       optional($.post_annotation),
+    ),
+
+    port_match: $ => seq(
+      'match',
+      $.identifier,
+      'with',
+      $.identifier,
     ),
 
     general_port_specifier: $ => seq(
@@ -255,7 +286,6 @@ module.exports = grammar({
       optional(seq('[', $._expression, ']')),
       choice($.type_name, 'serial'),
       repeat($.queue_full_clause),
-      optional(';'),
     ),
     
     queue_full_clause: $ => choice(
