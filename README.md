@@ -1,6 +1,8 @@
 > [!WARNING]
 > This is in pre-release it will not be completely functional.
-> This is not an official parser. For an official JPL parser for f'' use Visual Studio Code
+> This is not an official parser. For an official syntax highlighter and 
+> grammar check use Visual Studio Code. This project is meant to provide basic 
+> syntax highlighting in neovim and similar editors.
 
 # Installation Instructions
 
@@ -134,15 +136,17 @@ nvim: ~ v0.12.4
     ```bash
         ~/.config/nvim/queries/fpp/highlights.scm
     ```
-    This can be accomplished by 
-    ```bash
-        mkdir -p ~/.config/nvim/queries/fpp
-        cp ~/path/to/this/repo/queries/fpp/highlights.scm ~/.config/nvim/queries/fpp/
-    ```
-    or you can create a symlink
+    This can be accomplished by creating a symlink or copying the file directly. It is recomended to create a symlink so you don't copy the highlights.scsm file more than necessary if it is changed.
+
+    A symlink can be created like so
     ```bash
         mkdir -p ~/.config/nvim/queries
         ln -s ~/path/to/this/repo/queries/fpp ~/.config/nvim/queries/fpp
+    ```
+    or you can copy it. (not recommended)
+    ```bash
+        mkdir -p ~/.config/nvim/queries/fpp
+        cp ~/path/to/this/repo/queries/fpp/highlights.scm ~/.config/nvim/queries/fpp/
     ```
 5. The next step to get the parser to work is by having tree-sitter install the parser.
     - This can be acomplished by running
