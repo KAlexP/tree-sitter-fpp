@@ -27,12 +27,12 @@ module.exports = ($) => ({
     /*
      *
      */
-    topology_import_specifier: $ => seq('import', $.qualified_identifier, optional(';')),
+    topology_import_specifier: $ => seq('import', $.qualified_identifier),
 
     /*
      *
      */
-    instance_specifier: $ => seq('instance', $.qualified_identifier, optional(';')),
+    instance_specifier: $ => seq('instance', $.qualified_identifier),
 
     /*
      *

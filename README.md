@@ -9,20 +9,45 @@
 ## Directory File System
 ```bash
 .
+├── bindings
+│   ├── c
+│   │   ├── tree_sitter
+│   │   │   └── tree-sitter-fpp.h
+│   │   └── tree-sitter-fpp.pc.in
+│   └── rust
+│       ├── build.rs
+│       └── lib.rs
+├── Cargo.toml
+├── CMakeLists.txt
+├── fpp.so
+├── grammar
+│   ├── components.js
+│   ├── expressions.js
+│   ├── literals.js
+│   ├── names.js
+│   ├── ports.js
+│   ├── state_machine.js
+│   ├── topology.js
+│   ├── types.js
+│   └── utils.js
 ├── grammar.js
+├── Makefile
 ├── package.json
+├── package-lock.json
+├── parser.so
 ├── queries
 │   └── fpp
 │       └── highlights.scm
 ├── README.md
-└── src
-    ├── grammar.json
-    ├── node-types.json
-    ├── parser.c
-    └── tree_sitter
-        ├── alloc.h
-        ├── array.h
-        └── parser.h
+├── src
+│   ├── grammar.json
+│   ├── node-types.json
+│   ├── parser.c
+│   └── tree_sitter
+│       ├── alloc.h
+│       ├── array.h
+│       └── parser.h
+└── tree-sitter.json
 ```
 
 ## Install Instructions

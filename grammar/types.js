@@ -1,6 +1,10 @@
+const { trailingCjommaSep1 } = require('./utils');
+
 module.exports = ($) => ({
-    
     /*
+     * Abstract Type Definitions are similar to templates in c++
+     *
+     * syntax: type identifier
      *
      */
     abstract_type: $ => seq(
@@ -8,19 +12,12 @@ module.exports = ($) => ({
       $.qualified_identifier
     ),
 
-    /*
-     *
-     */
-    constant_definition: $ => seq(
-      'constant',
-      field('name', $.identifier),
-      '=',
-      $._expression,
-      optional(';'),
-    ),
 
     /*
      *
+     *  Alias Definition
+     *
+     *  syntax: [dictionary] type identifier = type name
      */
     type_alias_definition: $ => seq(
       'type',
@@ -31,6 +28,9 @@ module.exports = ($) => ({
     ),
 
     /*
+     *  Array Definitions -> an array
+     *
+     *  syntax: [dictionary] array identifier = [expression] type-name [default expression][format string-literal]
      *
      */
     array_definition: $ => prec.left(seq(
@@ -45,29 +45,85 @@ module.exports = ($) => ({
     )),
 
     /*
+     * Constant Definition
+     *
+     * syntax: [dictionary] constant identifier = expression
+     *
+     */
+    constant_definition: $ => seq(
+      'constant',
+      field('name', $.identifier),
+      '=',
+      $._expression,
+    ),
+
+    /*
+     * This rule takes the optional [dictionary] box from the different options
+     * inside the choice() option below to eliminate the optional('dictionary')
+     * in each of the rules. Making maintenance easier.
+     */
+    dictionary_definition: $ => seq(
+      'dictionary',
+      choice(
+        $.type_alias_definition,
+        $.array_definition,
+        $.constant_definition,
+        $.enum_definition,
+        $.struct_definition,
+      ),
+    ),
+
+    /*
+     *  Enum Definition
+     *
+     *  syntax: [dictionary] enum identifier [: type name] {enum-constant-sequence} [default expression]
+     *
+     */
+    enum_definition: $ => seq(
+      'enum',
+      field('name', $.identifier),
+      optional(seq(':', $.type_name)),
+      '{',
+        trailingCommaSep1($.enumerator),
+      '}',
+      optional(seq('default', $._expression)),
+    ),
+
+    /*
+     * Helper rule for enum definition: 
+     *
+     *    defines what the enum names are and allows pre/post annotations
+     *
+     */
+    enumerator: $ => seq(
+      repeat($.pre_annotation),
+      $.identifier,
+      optional(seq('=', $._expression)),
+      optional($.post_annotation),
+    ),
+
+    /*
+     *
+     */
+    string_type: $ => prec.right(seq('string', optional(seq('size', $._expression)))),
+
+    /*
+     * Struct Definition
+     *
+     *  syntax: [dictionary] struct identifier { struct-type-member-sequence } [default expression]
      *
      */
     struct_definition: $ => seq(
       'struct',
       field('name', $.identifier),
       '{',
-      $.struct_member_sequence,
+        trailingCommaSep1($.struct_member),
       '}',
       optional(seq('default', $.struct_value)),
-      optional(';'),
     ),
 
     /*
-     *
-     */
-    struct_member_sequence: $ => seq(
-      $.struct_member,
-      repeat(seq(optional(','), $.struct_member)),
-      optional(','),
-    ),
-
-    /*
-     *
+     *  struct definition helper rule that defines the insides of the {} brackets
      */
     struct_member: $ => seq(
       repeat($.pre_annotation),
@@ -89,63 +145,11 @@ module.exports = ($) => ({
     /*
      *
      */
-    enum_definition: $ => seq(
-      'enum',
-      field('name', $.identifier),
-      optional(seq(':', $.type_name)),
-      '{',
-      $.enumerator_sequence,
-      '}',
-      optional(seq('default', $._expression)),
-      optional(';'),
-    ),
-
-    /*
-     *
-     */
-    enumerator_sequence: $ => seq(
-      $.enumerator,
-      repeat(seq(optional(','), $.enumerator)),
-      optional(','),
-    ),
-
-    /*
-     *
-     */
-    enumerator: $ => seq(
-      repeat($.pre_annotation),
-      $.identifier,
-      optional(seq('=', $._expression)),
-      optional($.post_annotation),
-    ),
-
-    /*
-     *
-     */
-    dictionary_definition: $ => seq(
-      'dictionary',
-      choice(
-        $.type_alias_definition,
-        $.array_definition,
-        $.constant_definition,
-        $.enum_definition,
-        $.struct_definition,
-      ),
-    ),
-
-    /*
-     *
-     */
     type_name: $ => choice(
       $.primitive_type,
       $.string_type,
       $.qualified_identifier,
     ),
-
-    /*
-     *
-     */
-    string_type: $ => prec.right(seq('string', optional(seq('size', $._expression)))),
   
     /*
      *
