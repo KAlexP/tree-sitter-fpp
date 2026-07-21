@@ -205,29 +205,16 @@ module.exports = ($) => ({
       ':',
       $.qualified_identifier,
       'base', 'id', $._expression,
-      choice(
-        repeat($.pre_annotation),
+      repeat(choice(
+        $.pre_annotation,
         seq('type', $.string_literal),
         seq('at', $.string_literal),
         seq('queue', 'size', $._expression),
         seq('stack', 'size', $._expression),
         seq('priority', $._expression),
         seq('cpu', $._expression),
-        choice(
-          repeat(seq(
-            $.identifier,
-            '=',
-            $._expression,
-            optional($.post_annotation)
-          )),
-          repeat(seq(
-            $.identifier,
-            optional($.post_annotation),
-          )),
-        ),
-      ),
+      )),
       optional(seq('{', repeat($.init_specifier), '}')),
-      optional(';'),
     ),
 
   /*

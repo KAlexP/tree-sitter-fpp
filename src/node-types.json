@@ -495,10 +495,6 @@
           "named": true
         },
         {
-          "type": "post_annotation",
-          "named": true
-        },
-        {
           "type": "pre_annotation",
           "named": true
         },
