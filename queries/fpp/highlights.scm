@@ -89,6 +89,7 @@
   "container"
   "match"
   "with"
+  "interface"
 ] @keyword
 
 ; === Operators & Punctuation ===
