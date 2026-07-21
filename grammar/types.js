@@ -1,4 +1,4 @@
-const { trailingCjommaSep1 } = require('./utils');
+const { trailingCommaSep1 } = require('./utils');
 
 module.exports = ($) => ({
     /*

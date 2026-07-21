@@ -718,7 +718,7 @@
           "named": true
         },
         {
-          "type": "enumerator_sequence",
+          "type": "enumerator",
           "named": true
         },
         {
@@ -826,21 +826,6 @@
         },
         {
           "type": "unary_expression",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "enumerator_sequence",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "enumerator",
           "named": true
         }
       ]
@@ -2152,7 +2137,7 @@
       "required": true,
       "types": [
         {
-          "type": "struct_member_sequence",
+          "type": "struct_member",
           "named": true
         },
         {
@@ -2228,21 +2213,6 @@
         },
         {
           "type": "unary_expression",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "struct_member_sequence",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "struct_member",
           "named": true
         }
       ]

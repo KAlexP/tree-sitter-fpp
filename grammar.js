@@ -1,6 +1,3 @@
-// Trailing comma helper function
-const { trailingCommaSep1 } = require('./grammar/utils');
-
 // Rule Group files
 const    components = require('./grammar/components');
 const         ports = require('./grammar/ports');
