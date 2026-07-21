@@ -57,13 +57,18 @@ module.exports = ($) => ({
      *
      */
     transition_specifier: $ => prec(1,seq(
-      field('on',$.reserved_word),
+      'on',
       field('signal', $.identifier),
-      optional(seq(field('do',$.reserved_word),
-        $.action_list
-      )),
-      field('enter',$.reserved_word),
-      field('state',$.identifier)
+      choice(
+        seq('do', $.action_list),
+        seq( 'enter' , field('state',$.identifier)),
+        seq(
+          'do',
+          $.action_list,
+          'enter',
+          field('state',$.identifier),
+        ),
+      ),
     )),
 
     /*
