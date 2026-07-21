@@ -37,7 +37,7 @@ module.exports = ($) => ({
       'priority', 'product', 'queue', 'queued', 'record', 'recv', 'red', 'ref', 'reg',
       'request', 'resp', 'save', 'send', 'serial', 'set', 'severity', 'signal', 'size',
       'sizeof', 'stack', 'state', 'string', 'struct', 'sync', 'telemetry', 'text', 'throttle',
-      'time', 'topology', 'true', 'type', 'unmatched', 'update', 'warning', 'with', 'yellow','hook'
+      'time', 'topology', 'true', 'type', 'unmatched', 'update', 'warning', 'with', 'yellow'
     ),
 
   // END OF NAMES EXPORT RULES
