@@ -90,6 +90,7 @@
   "match"
   "with"
   "interface"
+  "health"
 ] @keyword
 
 ; === Operators & Punctuation ===
