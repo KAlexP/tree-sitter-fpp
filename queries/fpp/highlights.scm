@@ -91,6 +91,11 @@
   "with"
   "interface"
   "health"
+  "packets"
+  "packet"
+  "group"
+  "include"
+  "omit"
 ] @keyword
 
 ; === Operators & Punctuation ===
